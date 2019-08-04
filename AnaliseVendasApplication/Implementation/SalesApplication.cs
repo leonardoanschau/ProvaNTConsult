@@ -49,19 +49,23 @@ namespace AnaliseVendas.Service
             List<Salesman> salesmen = new List<Salesman>();
             List<Sale> sales = new List<Sale>();
 
-            foreach (var dataFile in dataFiles)
+
+            if (dataFiles.Count > 0)
             {
-                clients.AddRange(dataFile.Clients.Select(x => x).ToList());
-                salesmen.AddRange(dataFile.Salesman.Select(x => x).ToList());
-                sales.AddRange(dataFile.Sales.Select(x => x).ToList());
+                foreach (var dataFile in dataFiles)
+                {
+                    clients.AddRange(dataFile.Clients.Select(x => x).ToList());
+                    salesmen.AddRange(dataFile.Salesman.Select(x => x).ToList());
+                    sales.AddRange(dataFile.Sales.Select(x => x).ToList());
+                }
+
+                report.ClientCount = clients.Count;
+                report.SalesmanCount = salesmen.Count;
+                report.ExpensiveSaleId = sales.OrderByDescending(x => x.Total).First().Id;
+                report.WorstSalesman = sales.OrderBy(x => x.Total).First().Salesman;
+
+                _saleRepository.SaveReport(report);
             }
-
-            report.ClientCount = clients.Count;
-            report.SalesmanCount = salesmen.Count;
-            report.ExpensiveSaleId = sales.OrderByDescending(x => x.Total).First().Id;
-            report.WorstSalesman = sales.OrderBy(x => x.Total).First().Salesman;
-
-            _saleRepository.SaveReport(report);
 
             return report;
         }
