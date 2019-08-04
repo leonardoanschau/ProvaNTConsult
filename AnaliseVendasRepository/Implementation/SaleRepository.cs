@@ -14,37 +14,47 @@ namespace AnaliseVendas.Repository
     {
         public string[] SearchAllDataFiles()
         {
-            return Directory.GetFiles($"{Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)}\\data\\in\\", " *.dat", SearchOption.AllDirectories);
+            return Directory.GetFiles($"{Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)}\\data\\in\\", "*.dat", SearchOption.AllDirectories);
         }
 
         public DataFile ReadDataFile(string path)
         {
             DataFile dataFile = new DataFile();
 
-            string[] lines = File.ReadAllLines(path);
-
-            foreach (string line in lines)
+            try
             {
-                List<string> lineDetails = line.Split('ç').ToList();
+                string[] lines = File.ReadAllLines(path);
 
-                int layoutId = int.Parse(lineDetails.First());
-
-                switch (layoutId)
+                foreach (string line in lines)
                 {
-                    case (int)EnumLayoutId.Salesman:
-                        dataFile.Salesman.Add(this.MakeSalesman(lineDetails));
-                        break;
-                    case (int)EnumLayoutId.Client:
-                        dataFile.Clients.Add(this.MakeClient(lineDetails));
-                        break;
-                    case (int)EnumLayoutId.Sale:
-                        dataFile.Sales.Add(this.MakeSale(lineDetails));
-                        break;
-                    default:
-                        //log error
-                        break;
+                    List<string> lineDetails = line.Split('ç').ToList();
+
+                    int layoutId = 0;
+
+                    if (!int.TryParse(lineDetails.First(), out layoutId))
+                        continue;
+
+                    switch (layoutId)
+                    {
+                        case (int)EnumLayoutId.Salesman:
+                            dataFile.Salesman.Add(this.MakeSalesman(lineDetails));
+                            break;
+                        case (int)EnumLayoutId.Client:
+                            dataFile.Clients.Add(this.MakeClient(lineDetails));
+                            break;
+                        case (int)EnumLayoutId.Sale:
+                            dataFile.Sales.Add(this.MakeSale(lineDetails));
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
+            catch (Exception)
+            {
+
+            }
+            
 
             return dataFile;
         }

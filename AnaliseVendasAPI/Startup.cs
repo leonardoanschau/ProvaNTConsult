@@ -29,17 +29,16 @@ namespace AnaliseVendasAPI
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddHostedService<SalesHostedService>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             this.ConfigureIOC(services);
-            services.AddHostedService<SalesHostedService>();
-           
+            
         }
 
         private void ConfigureIOC(IServiceCollection services)
         {
             services.AddScoped<ISalesApplication, SalesApplication>();
             services.AddScoped<ISaleRepository, SaleRepository>();
-            //services.AddScoped<ISalesHostedService, SalesHostedService>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)

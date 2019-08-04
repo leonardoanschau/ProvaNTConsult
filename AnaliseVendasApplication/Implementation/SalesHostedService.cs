@@ -1,4 +1,5 @@
 ﻿using AnaliseVendasApplication.Interface;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
@@ -9,21 +10,22 @@ using System.Threading.Tasks;
 
 namespace AnaliseVendasApplication.Implementation
 {
-    public class SalesHostedService : ISalesHostedService, IHostedService, IDisposable
+    public class SalesHostedService: IHostedService, IDisposable
     {
         private Timer _timer;
-        private readonly ISalesApplication _salesApplication;
-        private readonly ILogger _logger;
 
-        public SalesHostedService(ISalesApplication salesApplication, ILogger<SalesHostedService> logger)
+        private readonly ILogger _logger;
+        public IServiceProvider Services { get; }
+
+        public SalesHostedService(IServiceProvider services, ILogger<SalesHostedService> logger)
         {
-            _salesApplication = salesApplication;
+            Services = services;
             _logger = logger;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            _timer = new Timer(Process, null, TimeSpan.Zero, TimeSpan.FromSeconds(5));
+            _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(5));
 
             return Task.CompletedTask;
         }
@@ -35,9 +37,16 @@ namespace AnaliseVendasApplication.Implementation
             return Task.CompletedTask;
         }
 
-        public void Process(object state)
+        public void DoWork(object state)
         {
-            _salesApplication.Process();
+            using (var scope = Services.CreateScope())
+            {
+                var scopedProcessingService =
+                    scope.ServiceProvider
+                        .GetRequiredService<ISalesApplication>();
+
+                scopedProcessingService.Process();
+            }
         }
 
         public void Dispose()
