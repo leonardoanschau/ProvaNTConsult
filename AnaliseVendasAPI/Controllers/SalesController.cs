@@ -16,12 +16,5 @@ namespace AnaliseVendasAPI.Controllers
         {
             _salesApp = salesApp;
         }
-
-        [HttpGet]
-        [Route("")]
-        public virtual IActionResult ProcessSales()
-        {
-            return new OkObjectResult(_salesApp.Process());
-        }
     }
 }

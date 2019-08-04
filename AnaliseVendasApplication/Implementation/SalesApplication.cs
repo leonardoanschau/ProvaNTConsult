@@ -2,23 +2,27 @@
 using AnaliseVendasApplication.Interface;
 using AnaliseVendasRepository.Interface;
 using AnaliseVendasRepository.Model;
+using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace AnaliseVendas.Service
 {
     public class SalesApplication: ISalesApplication
     {
         private readonly ISaleRepository _saleRepository;
+        private Timer _timer;
 
         public SalesApplication(ISaleRepository saleRepository)
         {
             _saleRepository = saleRepository;
         }
 
-        public Report Process()
+        public void Process()
         {
             List<DataFile> files = new List<DataFile>();
             string[] dataFiles = _saleRepository.SearchAllDataFiles();
@@ -28,7 +32,7 @@ namespace AnaliseVendas.Service
                 files.Add(_saleRepository.ReadDataFile(file));
             }
 
-            return this.Report(files);
+            this.Report(files);
         }
 
         public string[] SearchAllDataFiles()
@@ -61,7 +65,6 @@ namespace AnaliseVendas.Service
 
             return report;
         }
-
     }
 
 }

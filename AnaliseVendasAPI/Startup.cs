@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AnaliseVendas.Repository;
 using AnaliseVendas.Service;
+using AnaliseVendasApplication.Implementation;
 using AnaliseVendasApplication.Interface;
 using AnaliseVendasRepository.Interface;
 using Microsoft.AspNetCore.Builder;
@@ -30,12 +31,15 @@ namespace AnaliseVendasAPI
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             this.ConfigureIOC(services);
+            services.AddHostedService<SalesHostedService>();
+           
         }
 
         private void ConfigureIOC(IServiceCollection services)
         {
             services.AddScoped<ISalesApplication, SalesApplication>();
             services.AddScoped<ISaleRepository, SaleRepository>();
+            //services.AddScoped<ISalesHostedService, SalesHostedService>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -48,6 +52,8 @@ namespace AnaliseVendasAPI
             {
                 app.UseHsts();
             }
+
+            app.UseDeveloperExceptionPage();
 
             app.UseHttpsRedirection();
             app.UseMvc();

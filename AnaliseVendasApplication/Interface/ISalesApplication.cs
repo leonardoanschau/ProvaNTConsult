@@ -8,6 +8,6 @@ namespace AnaliseVendasApplication.Interface
     public interface ISalesApplication
     {
         string[] SearchAllDataFiles();
-        Report Process();
+        void Process();
     }
 }

@@ -14,7 +14,7 @@ namespace AnaliseVendas.Repository
     {
         public string[] SearchAllDataFiles()
         {
-            return Directory.GetFiles(@"C:\Projetos_Testes\data\in\", "*.dat", SearchOption.AllDirectories);
+            return Directory.GetFiles($"{Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)}\\data\\in\\", " *.dat", SearchOption.AllDirectories);
         }
 
         public DataFile ReadDataFile(string path)
