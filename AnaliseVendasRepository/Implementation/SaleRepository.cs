@@ -99,6 +99,18 @@ namespace AnaliseVendas.Repository
                 Price = double.Parse(saleItem.ElementAt(2))
             };
         }
+
+        public void SaveReport(Report report)
+        {
+            StringBuilder content = new StringBuilder();
+
+            content.AppendLine($"Quantidade de Clientes no arquivo de entrada: {report.ClientCount}");
+            content.AppendLine($"Quantidade de Vendedores no arquivo de entrada: {report.SalesmanCount}");
+            content.AppendLine($"ID da venda mais cara: {report.ExpensiveSaleId}");
+            content.AppendLine($"Pior vendedor: {report.WorstSalesman}");
+
+            File.WriteAllText($"{Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)}\\data\\out\\flat_file_name.done.dat", content.ToString());
+        }
     }
 
 }

@@ -9,5 +9,7 @@ namespace AnaliseVendasRepository.Interface
     {
         string[] SearchAllDataFiles();
         DataFile ReadDataFile(string path);
+
+        void SaveReport(Report report);
     }
 }
